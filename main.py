@@ -14,12 +14,10 @@ def get_time_in_min_and_second(seconds):
 
 def process_video(timestamps):
     print("Processing video")
-    for timestamp in timestamps:
-        timestamp[0] = timestamp[0]-90
     main_video = VideoFileClip(video_path)
     clips = [main_video.subclip(start, stop) for start, stop in timestamps]
     final_clip = concatenate_videoclips(clips)
-    final_clip.write_videofile(output_video_path, codec="h264_nvenc", audio_codec="aac")
+    final_clip.write_videofile(output_video_path, codec="libx264", audio_codec="aac")
     
 
 def video_analysis(video_path, target_path):
@@ -62,7 +60,7 @@ def video_analysis(video_path, target_path):
             else:
                 if detecting:
                     detecting = False
-                    timestamps.append([start_time, video_time_in_seconds])
+                    timestamps.append([(start_time-4), video_time_in_seconds])
 
     video.release()
 
@@ -79,8 +77,8 @@ def video_analysis(video_path, target_path):
     return timestamps
 
 media_path = "media/"
-video_path = media_path + "umar_bautista.mp4"
-output_video_path = media_path + "output.mp4"
+video_path = media_path + "full.mp4"
+output_video_path = media_path + "full_output.mp4"
 target_path = media_path + "target.png"
 
 no_Good_Name = True
