@@ -1,18 +1,21 @@
+"""
+This is a little personal project I've written up to skip all the bullshit in the big bald pink guy's second favourite fight promotion.
+It creates a condensed version of the event, through magic (mostly cv2 and moviepy)
+"""
 import cv2
 import time 
 import datetime
-import moviepy
-import json
-import ast
 from tqdm import tqdm
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 
 def get_time_in_min_and_second(seconds):
-    #Get seconds as int, return minuites and seconds as str
+    # Get seconds as int, return mins and seconds as str
     return str(datetime.timedelta(seconds = seconds))
 
 
 def process_video(timestamps):
+    # Takes 2d array of timestamps, applies them to main video, renders output into chosen folder
+    # Get the clips, use moviepy to cut them out from the main video, stick them together into a new file, then render it out
     print("Processing video")
     main_video = VideoFileClip(video_path)
     clips = [main_video.subclip(start, stop) for start, stop in timestamps]
@@ -21,6 +24,8 @@ def process_video(timestamps):
     
 
 def video_analysis(video_path, target_path):
+    # Generates 2d array of timestamps
+    # Use cv2 to scan through a video looking for a target, in this case, a certain MMA promotion's fight timer
     start = time.time()
 
     video = cv2.VideoCapture(video_path)
@@ -35,7 +40,8 @@ def video_analysis(video_path, target_path):
     start_time = None
 
     threshold = 0.95
-
+    # Honestly it's wack that this i has to be there for tqdm to work
+    # I could very much be wrong about that, but I can't be bothered reading, too busy making spaghet
     for i in tqdm(range(int(total_frames))):
         ret, frame = video.read()
         if not ret:
@@ -71,19 +77,19 @@ def video_analysis(video_path, target_path):
     print(total_time + " time taken")
     print(frames_analysed, " frames analysed")
 
+    # Could ditch this, but I like it, and it's my code
     for segment in timestamps:
         print(segment)
 
     return timestamps
 
+# There's probably a cleaner way of doing this that isn't just globals, but again, it's my code, and I'll do what I want.
 media_path = "media/"
-video_path = media_path + "full.mp4"
-output_video_path = media_path + "full_output.mp4"
+video_path = media_path + "umar_bautista.mp4"
+output_video_path = media_path + "output.mp4"
 target_path = media_path + "target.png"
 
-no_Good_Name = True
-if no_Good_Name == True:
-    timestamps = video_analysis(video_path=video_path, target_path=target_path)
+timestamps = video_analysis(video_path=video_path, target_path=target_path)
 
 process_video(timestamps)
 
